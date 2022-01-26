@@ -1,0 +1,44 @@
+
+.uartcontrol-button-row .uartcontrol-button-label {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.uartcontrol-button-row .uartcontrol-button-label i {
+    width: 20px;
+}
+
+.uartcontrol-button-row .uartcontrol-button-controls .btn {
+    width: 50%;
+}
+
+.uartcontrol-settings-row {
+    margin-bottom: 5px
+}
+
+hr.solid {
+  border-top: 3px solid #bbb;
+  margin: 1.0em auto;
+  width: 92%;
+  margin-left: 0;
+}
+
+.box {
+  float: center;
+  height: 20px;
+  width: 20px;
+  border: 1px solid black;
+  clear: both;
+}
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+.blue {
+  background-color: blue;
+}
