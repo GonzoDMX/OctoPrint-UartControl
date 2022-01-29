@@ -16,10 +16,15 @@
     margin-bottom: 5px
 }
 
+.insert-border {
+    border: 3px solid #bbb;
+    border-radius: 5px;
+    padding: 8px;
+}
+
 hr.solid {
   border-top: 3px solid #bbb;
   margin: 1.0em auto;
-  width: 92%;
   margin-left: 0;
 }
 

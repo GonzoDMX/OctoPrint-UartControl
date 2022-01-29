@@ -3,6 +3,7 @@ from __future__ import absolute_import, print_function
 from octoprint.server import user_permission
 
 import octoprint.plugin
+from octoprint.events import eventManager, Events
 import flask
 import serial
 import serial.tools.list_ports
@@ -10,6 +11,7 @@ import codecs
 
 class UartControlPlugin(
         octoprint.plugin.StartupPlugin,
+        octoprint.plugin.EventHandlerPlugin,
         octoprint.plugin.TemplatePlugin,
         octoprint.plugin.AssetPlugin,
         octoprint.plugin.SettingsPlugin,
@@ -21,8 +23,61 @@ class UartControlPlugin(
 
         used_ports = []
 
+        action_map = {'Startup': [],
+                      'Shutdown': [],
+                      'UserLoggedIn': [],
+                      'UserLoggedOut': [],
+                      'Error': [],
+                      'Connected': [],
+                      'Disconnected': [],
+                      'PrintStarted': [],
+                      'PrintFailed': [],
+                      'PrintDone': [],
+                      'PrintCancelled': [],
+                      'PrintPaused': [],
+                      'PrintResumed': [],
+                      'PowerOn': [],
+                      'PowerOff': [],
+                      'Home': [],
+                      'Cooling': [],
+                      'Alert': [],
+                      'EStop': [],
+                      'FilamentChange': [],
+                      'CaptureStart': [],
+                      'CaptureDone': [],
+                      'CaptureFailed': [],
+                      'MovieRendering': [],
+                      'MovieDone': [],
+                      'MovieFailed': []}
+
+
         def on_startup(self, *args, **kwargs):
-                self.event_trigger("start")
+            self._logger.info("UART Control Start")
+            for configuration in self._settings.get(["uart_configurations"]):
+                self._logger.info(
+                    "Startup UART {}: ( {}, {} )".format(
+                        configuration["name"],
+                        configuration["serial_port"],
+                        configuration["baud_rate"]
+                    ))
+                self.add_port(configuration["serial_port"])
+            self.populate_actions()
+            self.on_event('Startup', None)
+                    
+                    
+        def populate_actions(self):
+            for configuration in self._settings.get(["uart_configurations"]):
+                if configuration["trig_action"] != "Manual":
+                    self.action_map[configuration["trig_action"]].append({
+                        'port': configuration["serial_port"],
+                        'baud': configuration["baud_rate"],
+                        'message': configuration["message"]
+                    })
+
+
+        def clear_actions(self):
+            for value in self.action_map.values():
+                del value[:]
 
 
         def get_template_configs(self):
@@ -38,9 +93,9 @@ class UartControlPlugin(
 
         def get_assets(self):
                 return dict(
-                        js=["js/uartcontrol.js", "js/fontawesome-iconpicker.min.js"],
-                        css=["css/uartcontrol.css", "css/fontawesome-iconpicker.min.css"],
-                )
+                           js=["js/uartcontrol.js", "js/fontawesome-iconpicker.min.js"],
+                           css=["css/uartcontrol.css", "css/fontawesome-iconpicker.min.css"],
+                       )
 
 
         def get_settings_defaults(self):
@@ -49,16 +104,11 @@ class UartControlPlugin(
 
         def on_settings_save(self, data):
                 self.used_ports.clear()
-                for configuration in self._settings.get(["uart_configurations"]):
-                        self._logger.info(
-                                "Cleaned UART {}: ( {}, {} )".format(
-                                        configuration["name"],
-                                        configuration["serial_port"],
-                                        configuration["baud_rate"]
-                                ))
+                self.clear_actions()
 
                 octoprint.plugin.SettingsPlugin.on_settings_save(self, data)
-
+                self.populate_actions()
+                
                 for configuration in self._settings.get(["uart_configurations"]):
                         self._logger.info(
                                 "Reconfigured UART {}: ( {}, {} )".format(
@@ -67,7 +117,7 @@ class UartControlPlugin(
                                         configuration["baud_rate"]
                                 ))
                         self.add_port(configuration["serial_port"])
-
+               
 
         def on_after_startup(self):
                 for configuration in self._settings.get(["uart_configurations"]):
@@ -78,8 +128,18 @@ class UartControlPlugin(
                                         configuration["baud_rate"]
                                 ))
                         self.add_port(configuration["serial_port"])
-                self.event_trigger("post_start")
+                            
 
+        def on_event(self, event, payload):
+                self._logger.info(
+                    "UART Control caught event: {}, {}".format(str(event), str(payload)))
+                
+                try:
+                    for action in self.action_map[event]:
+                        self.send_to_serial(action['port'], action['baud'], action['message'])
+                except KeyError:
+                    pass
+                    
 
         def get_api_commands(self):
                 return dict(sendUartMessage=["id"])
@@ -92,13 +152,10 @@ class UartControlPlugin(
                 configuration = self._settings.get(["uart_configurations"])[int(data["id"])]
                 message = configuration["message"]
                 port = configuration["serial_port"]
-                rate = configuration["baud_rate"]
+                baud = configuration["baud_rate"]
 				
-                self._logger.info("Sending to {} at Baud {}: \"{}\"".format(port, rate, message))
-
                 if command == "sendUartMessage":
-                        message, i = codecs.unicode_escape_decode(message)
-                        #self.ser.write(message.encode('utf-8'))
+                    self.send_to_serial(port, baud, message)
 
 
         def on_api_get(self, request):
@@ -122,6 +179,25 @@ class UartControlPlugin(
             ports['port_sel'] = self.used_ports
             
             return flask.jsonify(ports)
+
+
+        def send_to_serial(self, port, baud, message):
+            if port != "Dummy":
+                try:
+                    ser = serial.Serial(port, baud)
+                    ser.open()
+                    message, i = codecs.unicode_escape_decode(message)
+                    ser.write(message.encode('utf-8'))
+                
+                except serial.SerialException:
+                    self._logger.info(
+                        "UART Control failed to send message: ( {}, {} ) \'{}\'".format(
+                        port, baud, message))
+                    return
+            
+            self._logger.info(
+                "UART Control send: ( {}, {} ) \'{}\'".format(
+                port, baud, message))
 
 
         def get_update_information(self):
@@ -150,14 +226,6 @@ class UartControlPlugin(
 
         def add_port(self, p):
                 self.used_ports.append(p)
-
-
-        def on_event(self, event):
-            self._logger.info("Event Triggered: {}".format(event))
-
-
-        def event_trigger(self, e):
-            self._logger.info("Self Event: {}".format(e))
 
 
 __plugin_name__ = "UART Control"

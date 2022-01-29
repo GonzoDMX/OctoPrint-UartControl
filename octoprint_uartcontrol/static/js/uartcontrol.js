@@ -4,6 +4,8 @@
  * Author: Andrew O'Shei
  * License: AGPLv3
  */
+
+
 $(function () {
     function UartControlViewModel(parameters) {
         var self = this;
@@ -43,7 +45,7 @@ $(function () {
                 message: "",
                 serial_port: "",
                 baud_rate: "",
-                trig_action: ""
+                trig_action: "",
             });
             self.updateIconPicker();
             self.addSerialOptions();

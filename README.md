@@ -1,10 +1,7 @@
 # OctoPrint-UartControl
 
-NOTICE: Plugin is currently in developement, the core UART functionality is currently disabled in this build, I'm working on the front end.</br></br>
+UART Control adds functionality for sending custom serial messages. Its features include a sidebar with buttons for manually transmitting messages as well as an event based trigger for sending messages when events occur in Octoprint. This is useful for synchronizing peripheral serial dvices with Octoprint. Example, you would like to control your printer's lighting with an arduino, a message can be automated to turn off the lights when the print is finished or when camera capture has stopped. This also allows you to directly control devices from the Raspberry Pi's hardware serial pins.
 
-UART Control adds a sidebar with buttons for transmitting messages over the Raspberry Pi's UART Serial pins. You can add as multiple buttons for different messages.
-
-Very useful if you want to add a microcontroller for managing peripheral devices to your 3D printer setup.
 
 ## Setup
 
