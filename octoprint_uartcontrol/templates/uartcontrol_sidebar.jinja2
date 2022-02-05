@@ -1,11 +1,11 @@
 <div class="row-fluid" data-bind="foreach: uartButtons">
-    <div class="uartcontrol-button-row row-fluid">
-        <div class="uartcontrol-button-label span6">
-            <i data-bind="class: icon"></i>
-            <span data-bind="text: name"></span>
-        </div>
-        <div class="uartcontrol-button-controls input-prepend input-append span6">
-            <button class="btn" data-toggle="dropdown" data-bind="click: $parent.sendUartMessage">SEND</button>
-        </div>
+  <div class="uartcontrol-button-row row-fluid">
+    <div class="uartcontrol-button-label span6">
+      <i data-bind="class: icon"></i>
+      <span data-bind="text: name"></span>
     </div>
+    <div class="uartcontrol-button-controls input-prepend input-append span6">
+      <button class="btn" data-toggle="dropdown" data-bind="click: $parent.sendUartMessage">SEND</button>
+    </div>
+  </div>
 </div>

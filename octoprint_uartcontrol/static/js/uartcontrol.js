@@ -6,7 +6,7 @@
  */
 
 
-$(function () {
+$(function() {
     function UartControlViewModel(parameters) {
         var self = this;
         self.settings = parameters[0];
@@ -14,31 +14,31 @@ $(function () {
         self.uartConfigurations = ko.observableArray();
 
 
-        self.onBeforeBinding = function () {
+        self.onBeforeBinding = function() {
             self.uartConfigurations(self.settings.settings.plugins.uartcontrol.uart_configurations.slice(0));
             self.updateUartButtons();
         };
 
 
-        self.onSettingsShown = function () {
+        self.onSettingsShown = function() {
             self.uartConfigurations(self.settings.settings.plugins.uartcontrol.uart_configurations.slice(0));
             self.updateIconPicker();
             self.setSerialOptions();
         };
 
 
-        self.onSettingsHidden = function () {
+        self.onSettingsHidden = function() {
             self.uartConfigurations(self.settings.settings.plugins.uartcontrol.uart_configurations.slice(0));
             self.updateUartButtons();
         };
 
 
-        self.onSettingsBeforeSave = function () {
+        self.onSettingsBeforeSave = function() {
             self.settings.settings.plugins.uartcontrol.uart_configurations(self.uartConfigurations.slice(0));
         };
 
 
-        self.addUartConfiguration = function () {
+        self.addUartConfiguration = function() {
             self.uartConfigurations.push({
                 icon: "fas fa-plug",
                 name: "",
@@ -52,13 +52,13 @@ $(function () {
         };
 
 
-        self.removeUartConfiguration = function (configuration) {
+        self.removeUartConfiguration = function(configuration) {
             self.uartConfigurations.remove(configuration);
         };
 
 
-        self.updateIconPicker = function () {
-            $('.iconpicker').each(function (index, item) {
+        self.updateIconPicker = function() {
+            $('.iconpicker').each(function(index, item) {
                 $(item).iconpicker({
                     placement: "bottomLeft",
                     hideOnSelect: true,
@@ -66,12 +66,12 @@ $(function () {
             });
         };
 
-        
-        self.setSerialOptions = function () {
-            OctoPrint.simpleApiGet("uartcontrol").then(function (ports) {
+
+        self.setSerialOptions = function() {
+            OctoPrint.simpleApiGet("uartcontrol").then(function(ports) {
                 var port_list = ports.port_list
                 var port_sel = ports.port_sel
-                $('.serial-select').each(function (index, item) {
+                $('.serial-select').each(function(index, item) {
                     var len = port_list.length;
                     for (var i = 0; i < len; i++) {
                         $(this).append($('<option>', {
@@ -84,10 +84,10 @@ $(function () {
                 });
             });
         };
-        
-        
-        self.addSerialOptions = function () {
-            OctoPrint.simpleApiGet("uartcontrol").then(function (ports) {
+
+
+        self.addSerialOptions = function() {
+            OctoPrint.simpleApiGet("uartcontrol").then(function(ports) {
                 var port_list = ports.port_list
                 var len = port_list.length;
                 for (var i = 0; i < len; i++) {
@@ -102,8 +102,8 @@ $(function () {
         };
 
 
-        self.updateUartButtons = function () {
-            self.uartButtons(ko.toJS(self.uartConfigurations).map(function (item) {
+        self.updateUartButtons = function() {
+            self.uartButtons(ko.toJS(self.uartConfigurations).map(function(item) {
                 return {
                     icon: item.icon,
                     name: item.name,
@@ -116,8 +116,10 @@ $(function () {
         };
 
 
-        self.sendUartMessage = function () {
-            OctoPrint.simpleApiCommand("uartcontrol", "sendUartMessage", {id: self.uartButtons.indexOf(this)});
+        self.sendUartMessage = function() {
+            OctoPrint.simpleApiCommand("uartcontrol", "sendUartMessage", {
+                id: self.uartButtons.indexOf(this)
+            });
         };
     };
 
@@ -128,5 +130,3 @@ $(function () {
         elements: ["#settings_plugin_uartcontrol", "#sidebar_plugin_uartcontrol"]
     });
 });
-
-

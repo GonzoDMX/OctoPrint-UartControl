@@ -1,25 +1,24 @@
-
 .uartcontrol-button-row .uartcontrol-button-label {
-    padding-top: 4px;
-    padding-bottom: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .uartcontrol-button-row .uartcontrol-button-label i {
-    width: 20px;
+  width: 20px;
 }
 
 .uartcontrol-button-row .uartcontrol-button-controls .btn {
-    width: 50%;
+  width: 50%;
 }
 
 .uartcontrol-settings-row {
-    margin-bottom: 5px
+  margin-bottom: 5px
 }
 
 .insert-border {
-    border: 3px solid #bbb;
-    border-radius: 5px;
-    padding: 8px;
+  border: 3px solid #bbb;
+  border-radius: 5px;
+  padding: 8px;
 }
 
 hr.solid {
