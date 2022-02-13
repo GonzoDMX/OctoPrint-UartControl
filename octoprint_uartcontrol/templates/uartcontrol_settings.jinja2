@@ -1,117 +1,184 @@
 <form class="form-horizontal">
   <h3>UART Control Configuration :</h3>
   <hr class="solid">
-    <div data-bind="foreach: uartConfigurations">
-      <div class="row-fluid uartcontrol-settings-row">
-        <div class="insert-border">
-          <div class="row1 row-fluid">
-            <div class="span2">
-              <h5>Icon</h5>
-            </div>
-            <div class="span3">
-              <h5>Name</h5>
-            </div>
-            <div class="span6">
-              <h5>Message</h5>
-            </div>
-            <div class="span1">
-              <a title="Remove UART Configuration" class="btn btn-danger" data-bind="click: $parent.removeUartConfiguration">
-                <i class="icon-trash"></i>
-              </a>
+  <div class="ctrl-panel">
+    <div class="config-row row-fluid">
+      <div class="span4">
+        <h5>Serial Port</h5>
+      </div>
+      <div class="span2">
+        <h5>Baud Rate</h5>
+      </div>
+    </div>
+
+    <div class="config-row row-fluid">
+      <div class="span4">
+        <select class="serial-select span12" onchange="this.className=this.options[this.selectedIndex].className" type="text" data-bind="value: uartInterface.serial_port">
+        </select>
+      </div>
+
+      <div class="span2">
+        <select class="baud-select color span12" type="text" data-bind="value: uartInterface.baud_rate">
+          <option value="300">300</option>
+          <option value="1200">1200</option>
+          <option value="2400">2400</option>
+          <option value="4800">4800</option>
+          <option class="opt-unavailable" value="9600">9600</option>
+          <option value="19200">19200</option>
+          <option value="38400">38400</option>
+          <option value="57600">57600</option>
+          <option value="74880">74880</option>
+          <option value="115200">115200</option>
+          <option value="230400">230400</option>
+          <option value="250000">250000</option>
+        </select>
+      </div>
+
+    </div>
+    <div class="config-row row-fluid">
+      <div class="span2">
+        <h5>Byte Size</h5>
+      </div>
+      <div class="span2">
+        <h5>Parity</h5>
+      </div>
+      <div class="span2">
+        <h5>Stop Bits</h5>
+      </div>
+      <div class="span2">
+        <h5>Flow Control</h5>
+      </div>
+    </div>
+
+    <div class="config-row row-fluid">
+      <div class="span2">
+        <select class="byte-select span12" type="text" data-bind="value: uartInterface.byte_size">
+          <option value="EIGHTBITS">8</option>
+          <option value="SEVENBITS">7</option>
+          <option value="SIXBITS">6</option>
+          <option value="FIVEBITS">5</option>
+        </select>
+      </div>
+
+      <div class="span2">
+        <select class="parity-select span12" type="text" data-bind="value: uartInterface.parity">
+          <option value="PARITY_NONE">None</option>
+          <option value="PARITY_EVEN">Even</option>
+          <option value="PARITY_ODD">Odd</option>
+          <option value="PARITY_MARK">Mark</option>
+          <option value="PARITY_SPACE">Space</option>
+        </select>
+      </div>
+
+      <div class="span2">
+        <select class="stop-select span12" type="text" data-bind="value: uartInterface.stop_bits">
+          <option value="STOP_BITS_ONE">1</option>
+          <option value="STOP_BITS_ONE_POINT_FIVE">1.5</option>
+          <option value="STOP_BITS_TWO">2</option>
+        </select>
+      </div>
+
+      <div class="span2">
+        <select class="flow-select span12" type="text" data-bind="value: uartInterface.flow_control">
+          <option value="None">None</option>
+          <option value="xonxoff">Software</option>
+          <option value="rtscts">RTS/CTS</option>
+          <option value="dsrdtr">DSR/DTR</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="add-btn">
+      <a title="Add UART Configuration" class="btn btn-primary" data-bind="click: addUartController">
+        <p>Add Control</p>
+        <i class="icon-plus"></i>
+      </a>
+    </div>
+  </div>
+
+  <hr class="solid">
+  <div data-bind="foreach: uartControllers">
+    <div class="row-fluid uartcontrol-settings-row">
+      <div class="insert-border">
+
+        <div class="row1 row-fluid">
+          <div class="span3">
+            <h5>Name</h5>
+          </div>
+          <div class="span3">
+            <h5>Icon</h5>
+          </div>
+          <div class="span4">
+            <h5>Trigger on Action</h5>
+          </div>
+        </div>
+
+        <div class="row2 row-fluid">
+          <div class="span3">
+            <input class="name span12" type="text" data-bind="value: name" />
+          </div>
+          <div class="span3">
+            <div class="input-prepend">
+              <span class="add-on">
+                <i class="iconpicker-component"></i>
+              </span>
+              <input class="iconpicker span10" type="text" data-bind="value: icon, valueUpdate: 'iconpickerSelected'" />
             </div>
           </div>
-
-          <div class="row2 row-fluid">
-            <div class="span2">
-              <div class="input-prepend">
-                <span class="add-on">
-                  <i class="iconpicker-component"></i>
-                </span>
-                <input class="iconpicker span10" type="text" data-bind="value: icon, valueUpdate: 'iconpickerSelected'"/>
-              </div>
-            </div>
-            <div class="span3">
-              <input class="name span12" type="text" data-bind="value: name"/>
-            </div>
-            <div class="span7">
-              <input class="message span12" type="text" data-bind="value: message"/>
-            </div>
+          <div class="span5">
+            <select class="trig-select span12" type="text" data-bind="value: trig_action">
+              <option selected="selected" value="Manual">Manual</option>
+              <option value="Startup">OctoPi: Server startup</option>
+              <option value="Shutdown">OctoPi: Server shutdown</option>
+              <option value="UserLoggedIn">OctoPi: User log in</option>
+              <option value="UserLoggedOut">OctoPi: User log out</option>
+              <option value="Error">OctoPi: Error</option>
+              <option value="Connected">3D Printer: Connected</option>
+              <option value="Disconnected">3D Printer: Disconnected</option>
+              <option value="PrintStarted">3D Printer: Print started</option>
+              <option value="PrintFailed">3D Printer: Print failed</option>
+              <option value="PrintDone">3D Printer: Print finished</option>
+              <option value="PrintCancelled">3D Printer: Print cancelled</option>
+              <option value="PrintPaused">3D Printer: Print paused</option>
+              <option value="PrintResumed">3D Printer: Print resumed</option>
+              <option value="PowerOn">GCODE: Power on</option>
+              <option value="PowerOff">GCODE: Power off</option>
+              <option value="Home">GCODE: Home</option>
+              <option value="Cooling">GCODE: Cooling</option>
+              <option value="Alert">GCODE: Alert</option>
+              <option value="EStop">GCODE: Emergency stop</option>
+              <option value="FilamentChange">GCODE: Filament change</option>
+              <option value="CaptureStart">Camera: Capture started</option>
+              <option value="CaptureDone">Camera: Capture finished</option>
+              <option value="CaptureFailed">Camera: Capture failed</option>
+              <option value="MovieRendering">Camera: Render started</option>
+              <option value="MovieDone">Camera: Render finished</option>
+              <option value="MovieFailed">Camera: Render failed</option>
+            </select>
           </div>
+        </div>
 
-          <div class="row3 row-fluid">
-            <div class="span3">
-              <h5>Serial Port</h5>
-            </div>
-            <div class="span2">
-              <h5>Baud Rate</h5>
-            </div>
-            <div class="span6">
-              <h5>Trigger on Action</h5>
-            </div>
+        <div class="row3 row-fluid">
+
+          <div class="span7">
+            <h5>Message</h5>
           </div>
+        </div>
 
-          <div class="row4 row-fluid">
-            <div class="span3">
-              <select class="serial-select span12" type="text" data-bind="value: serial_port"></select>
-            </div>
-            <div class="span2">
-              <select class="baud-select span12" type="number" data-bind="value: baud_rate">
-                <option value="300">300</option>
-                <option value="1200">1200</option>
-                <option value="2400">2400</option>
-                <option value="4800">4800</option>
-                <option selected="selected" value="9600">9600</option>
-                <option value="19200">19200</option>
-                <option value="38400">38400</option>
-                <option value="57600">57600</option>
-                <option value="74880">74880</option>
-                <option value="115200">115200</option>
-                <option value="230400">230400</option>
-                <option value="250000">250000</option>
-              </select>
-            </div>
-            <div class="span7">
-              <select class="trig-select span12" type="text" data-bind="value: trig_action">
-                <option selected="selected" value="Manual">Manual</option>
-                <option value="Startup">OctoPi: Server startup</option>
-                <option value="Shutdown">OctoPi: Server shutdown</option>
-                <option value="UserLoggedIn">OctoPi: User log in</option>
-                <option value="UserLoggedOut">OctoPi: User log out</option>
-                <option value="Error">OctoPi: Error</option>
-                <option value="Connected">3D Printer: Connected</option>
-                <option value="Disconnected">3D Printer: Disconnected</option>
-                <option value="PrintStarted">3D Printer: Print started</option>
-                <option value="PrintFailed">3D Printer: Print failed</option>
-                <option value="PrintDone">3D Printer: Print finished</option>
-                <option value="PrintCancelled">3D Printer: Print cancelled</option>
-                <option value="PrintPaused">3D Printer: Print paused</option>
-                <option value="PrintResumed">3D Printer: Print resumed</option>
-                <option value="PowerOn">GCODE: Power on</option>
-                <option value="PowerOff">GCODE: Power off</option>
-                <option value="Home">GCODE: Home</option>
-                <option value="Cooling">GCODE: Cooling</option>
-                <option value="Alert">GCODE: Alert</option>
-                <option value="EStop">GCODE: Emergency stop</option>
-                <option value="FilamentChange">GCODE: Filament change</option>
-                <option value="CaptureStart">Camera: Capture started</option>
-                <option value="CaptureDone">Camera: Capture finished</option>
-                <option value="CaptureFailed">Camera: Capture failed</option>
-                <option value="MovieRendering">Camera: Render started</option>
-                <option value="MovieDone">Camera: Render finished</option>
-                <option value="MovieFailed">Camera: Render failed</option>
-              </select>
-            </div>
+        <div class="row4 row-fluid">
+          <div class="span8">
+            <input class="message span12" type="text" data-bind="value: message" />
+          </div>
+          <div class="btn-container span3">
+            <a title="Test UART Control" class="btn btn-primary btn-test" data-bind="click: $parent.testUartMessage">
+              <i>Test</i>
+            </a>
+            <a title="Remove UART Configuration" class="btn btn-danger btn-rmv" data-bind="click: $parent.removeUartController">
+              <i class="icon-trash"></i>
+            </a>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="row-fluid">
-      <div class="offset10 span1">
-        <a title="Add UART Configuration" class="btn btn-primary" data-bind="click: addUartConfiguration">
-          <p>Add Control</p>
-          <i class="icon-plus"></i>
-        </a>
-      </div>
-    </div>
-  </form>
+  </div>
+</form>

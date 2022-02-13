@@ -12,6 +12,7 @@
 }
 
 .uartcontrol-settings-row {
+  margin-left: 100px;
   margin-bottom: 5px
 }
 
@@ -19,6 +20,7 @@
   border: 3px solid #bbb;
   border-radius: 5px;
   padding: 8px;
+  width: 70%;
 }
 
 hr.solid {
@@ -45,4 +47,39 @@ hr.solid {
 
 .blue {
   background-color: blue;
+}
+
+.ctrl-panel {
+  position: relative;
+}
+
+.config-row {
+  padding-left: 10px;
+}
+
+.btn-test {
+  float: left;
+  width: 35%;
+  margin-right: 5px;
+}
+
+.btn-rmv {
+  float: right;
+}
+
+.add-btn {
+  position: absolute;
+  margin-top: -30px;
+  top: 50%;
+  left: 80%;
+}
+
+.opt-available {
+  color: black;
+  background-color: white;
+}
+
+.opt-unavailable {
+  color: white;
+  background-color: #D70000;
 }
